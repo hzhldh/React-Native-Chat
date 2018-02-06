@@ -4,20 +4,21 @@ import {
  AppRegistry
 } from 'react-native';
 import {createStore, applyMiddleware, combineReducers} from "redux";
-// import { composeWithDevTools } from 'redux-devtools-extension';
-import { devToolsEnhancer } from 'redux-devtools-extension';
-// import devToolsEnhancer from 'remote-redux-devtools';
+import {composeWithDevTools} from 'remote-redux-devtools';
 
 import {Provider} from "react-redux";
 import { Navigation } from 'react-native-navigation';
 import registerScreens from './components/screens/screens.js';
-import * as reducers from "./reducers/index";
+import reducers from "./reducers/index";
 import * as appActions from "./actions/index";
 import thunk from "redux-thunk";
 import SessionTab from "./components/screens/sessionTab";
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+// const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const reducer = combineReducers(reducers);
-const store = createStoreWithMiddleware(reducer,devToolsEnhancer());
+const store = createStore(reducer,composeWithDevTools(
+  applyMiddleware(thunk),
+
+));
 registerScreens(store, Provider);
 
 export default class  App extends Component {
@@ -44,8 +45,8 @@ export default class  App extends Component {
         case 'login':
           Navigation.startSingleScreenApp({
                     screen: {
-                    screen: 'ReactNativeReduxExample.Login', // unique ID registered with Navigation.registerScreen
-                    title: 'Welcome', // title of the screen as appears in the nav bar (optional)
+                    screen: 'Login', // unique ID registered with Navigation.registerScreen
+                    title: '登录', // title of the screen as appears in the nav bar (optional)
                     navigatorStyle: {}, // override the navigator style for the screen, see "Styling the navigator" below (optional)
                     navigatorButtons: {} // override the nav buttons for the screen, see "Adding buttons to the navigator" below (optional)
                     },
@@ -57,7 +58,7 @@ export default class  App extends Component {
                 tabs: [
                 {
                     label: '好友',
-                    screen: 'ReactNativeReduxExample.HomeTab',
+                    screen: 'HomeTab',
                     icon: require('./img/checkmark.png'),
                     selectedIcon: require('./img/checkmark.png'),
                     title: '好友列表',
@@ -67,13 +68,11 @@ export default class  App extends Component {
 
                 {
                     label: '会话',
-                    screen: 'ReactNativeReduxExample.SessionTab',
+                    screen: 'SessionTab',
                     icon: require('./img/checkmark.png'),
                     selectedIcon: require('./img/checkmark.png'),
                     title: '会话列表',
                     navigatorStyle: {}
-
-                    
                 }
                
                 ],

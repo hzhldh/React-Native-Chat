@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "remotedev-debugger --hostname localhost --port 8081 --injectserver"
   },
   "dependencies": {
     "react": "16.0.0-alpha.12",
@@ -12,16 +13,16 @@
     "react-native-navigation": "^1.1.235",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
-    "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0",
     "seamless-immutable": "^7.1.2"
   },
   "devDependencies": {
+    "remotedev-rn-debugger": "^0.8.3",
     "babel-jest": "21.2.0",
     "babel-preset-react-native": "4.0.0",
     "jest": "21.2.1",
     "react-test-renderer": "16.0.0-alpha.12",
-    "remote-redux-devtools": "^0.5.12"
+    "remote-redux-devtools": "0.5.0"
   },
   "jest": {
     "preset": "react-native"

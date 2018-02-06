@@ -4,7 +4,7 @@ import {
   TouchableOpacity,
   Text,
   Button,
-  View
+  View, StyleSheet, TextInput
 } from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import {connect} from 'react-redux';
@@ -15,24 +15,28 @@ export class Login extends Component {
   render() {
     return (
         <View>
-            <Button large onPress={ () => this.onLoginPress()} title="开始聊天">
-                <Text> Continue</Text>
-            </Button>
+
+
+            <TextInput/>
+
+            <Button large onPress={ () => this.onLoginPress()} title="输入昵称，开始聊天"/>
+
         </View>
         
     );
   }
 
-  /*
-  onLoginPress:
-    Changes the root value of the app to be 'after-login', changing it to tab view
-  */
+  //登录点击事件
   onLoginPress() {
 
     this.props.dispatch(appActions.login());
    
   }
 }
+
+const styles = StyleSheet.create({
+
+});
 
 
 export default connect()(Login);
