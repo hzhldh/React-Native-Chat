@@ -4,7 +4,6 @@ import {
  AppRegistry
 } from 'react-native';
 import {createStore, applyMiddleware, combineReducers} from "redux";
-import {composeWithDevTools} from 'remote-redux-devtools';
 
 import {Provider} from "react-redux";
 import { Navigation } from 'react-native-navigation';
@@ -12,13 +11,21 @@ import registerScreens from './components/screens/screens.js';
 import reducers from "./reducers/index";
 import * as appActions from "./actions/index";
 import thunk from "redux-thunk";
+import logger from "redux-logger";
 import SessionTab from "./components/screens/sessionTab";
-// const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-const reducer = combineReducers(reducers);
-const store = createStore(reducer,composeWithDevTools(
-  applyMiddleware(thunk),
 
-));
+//chrome开发环境开启网络调试
+global.XMLHttpRequest = global.originalXMLHttpRequest ?
+  global.originalXMLHttpRequest :
+  global.XMLHttpRequest;
+global.FormData = global.originalFormData ?
+  global.originalFormData :
+  global.FormData;
+
+const createStoreWithMiddleware = applyMiddleware(thunk,logger)(createStore);
+const reducer = combineReducers(reducers);
+const store = createStoreWithMiddleware(reducer);
+
 registerScreens(store, Provider);
 
 export default class  App extends Component {

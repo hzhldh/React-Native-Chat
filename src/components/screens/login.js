@@ -9,6 +9,7 @@ import {
 import {Navigation} from 'react-native-navigation';
 import {connect} from 'react-redux';
 import * as  appActions from '../../actions/index';
+import {userLogin} from "../../service";
 
 export class Login extends Component {
 
@@ -28,9 +29,13 @@ export class Login extends Component {
 
   //登录点击事件
   onLoginPress() {
+    userLogin("周杰伦").then((resp)=>{
+      console.log("====>登录返回",resp);
+    }).catch(e=>{
+      console.log(e);
+    });
 
     this.props.dispatch(appActions.login());
-   
   }
 }
 
