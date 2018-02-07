@@ -12,15 +12,24 @@ import * as  appActions from '../../actions/index';
 import {userLogin} from "../../service";
 
 export class Login extends Component {
+  state:{
+    nickname:string
+  };
+
+  constructor(){
+    super();
+    this.state={
+      nickname:""
+    }
+  }
 
   render() {
     return (
         <View>
 
+          <TextInput onChangeText={(val)=>{this.setState({nickname:val})}}/>
 
-            <TextInput/>
-
-            <Button large onPress={ () => this.onLoginPress()} title="输入昵称，开始聊天"/>
+          <Button large onPress={ () => this.onLoginPress()} title="输入昵称，开始聊天"/>
 
         </View>
         
@@ -29,13 +38,19 @@ export class Login extends Component {
 
   //登录点击事件
   onLoginPress() {
-    userLogin("周杰伦").then((resp)=>{
-      console.log("====>登录返回",resp);
+    alert("1");
+    // const {nickname}=this.state;
+    // if(!nickname) return;
+
+    userLogin("张三").then((resp)=>{
+      //登录成功
+      this.props.dispatch(appActions.login(resp));
     }).catch(e=>{
+      alert(e);
       console.log(e);
     });
 
-    this.props.dispatch(appActions.login());
+
   }
 }
 

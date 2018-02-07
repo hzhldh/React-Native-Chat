@@ -2,9 +2,9 @@
  * @flow
  */
 import { Navigation } from 'react-native-navigation';
-import Login from './login';
-import HomeTab from './homeTab';
-import SessionTab from './sessionTab';
+import Login from './Login';
+import HomeTab from './HomeTab';
+import SessionTab from './SessionTab';
 import ChatView from "./ChatView";
 
 

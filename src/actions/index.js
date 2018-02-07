@@ -1,4 +1,5 @@
 import * as types from './actiontypes';
+import {loginSuccess} from "./user";
 
 /*
 Action Creators
@@ -23,10 +24,12 @@ export function appInitialized() {
   };
 }
 
-export function login() {
+export function login(user:any) {
   return async function(dispatch, getState) {
     // login logic would go here, and when it's done, we switch app roots
     dispatch(changeAppRoot('after-login'));
+    //存入登录者信息
+    dispatch(loginSuccess(user))
   };
 }
 

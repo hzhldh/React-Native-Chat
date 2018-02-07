@@ -1,6 +1,6 @@
 import axios from 'axios';
 export const CHAT_API_URL="http://192.168.1.176:8080";
-export const SOCKET_SERVER_URL="http://192.168.1.176:8080";
+export const SOCKET_SERVER_URL="http://192.168.1.176:9092";
 
 
 /**
@@ -13,11 +13,20 @@ export async function userLogin(nickname) {
 }
 
 /**
+ * 获取用户列表
+ */
+export async function getUserList() {
+  let resp =
+    await axios.get(`${CHAT_API_URL}/user`);
+  return resp ? resp.data : [];
+}
+
+/**
  * 获取用户的会话
  */
 export async function getRecentSessions(userId) {
   let resp = await axios.get(`${CHAT_API_URL}/session/recent?userId=${userId}`);
-  return resp ? resp.data : null;
+  return resp ? resp.data : [];
 }
 
 /**
