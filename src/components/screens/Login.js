@@ -38,7 +38,6 @@ export class Login extends Component {
 
   //登录点击事件
   onLoginPress() {
-    alert("1");
     // const {nickname}=this.state;
     // if(!nickname) return;
 

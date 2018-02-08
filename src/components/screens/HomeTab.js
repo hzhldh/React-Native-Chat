@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import {getUserList, SOCKET_SERVER_URL} from "../../service";
+import {addReceiveMessage, changeActiveUser} from "../../actions/session";
 
 global.client = null;//全局变量
 
@@ -26,6 +27,7 @@ class HomeTab extends Component {
     }).catch(e=>{
       console.log(e);
     });
+    console.ignoredYellowBox = ['Setting a timer'];//忽略超时警告
     this.initSocket();
   }
 
@@ -46,7 +48,7 @@ class HomeTab extends Component {
     });
     client.on("msg", (data) => {//实时收取消息
       console.log("msg:", data);
-      // dispatch(receiveMessage(data))
+      this.props.dispatch(addReceiveMessage(data))
     });
   }
 
@@ -61,14 +63,16 @@ class HomeTab extends Component {
           {userList.length>0&&userList.filter(item=>item.id!==this.props.user.id).map((item,index)=>
             <View style={styles.item} key={index}>
               <Text onPress={()=>{
-              this.props.navigator.showModal({
-                screen: "ChatView",
-                title: item.nickname,
-                passProps: {},
-                navigatorStyle: {},
-                animationType: 'slide-up'
-              });
-            }}>{item.nickname}</Text>
+                this.props.navigator.showModal({
+                  screen: "ChatView",
+                  title: item.nickname,
+                  passProps: {chatUser:item},
+                  navigatorStyle: {},
+                  animationType: 'slide-up'
+                });
+                //设置当前活跃用户
+                this.props.dispatch(changeActiveUser(item));
+              }}>{item.nickname}</Text>
             </View>)}
 
         </ScrollView>

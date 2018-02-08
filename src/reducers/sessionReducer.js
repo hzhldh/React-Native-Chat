@@ -1,5 +1,8 @@
 import {LOGGED_IN, LOGOUT} from "../actions/user";
-import {MESSAGE_MORE, SESSION_CHANGE, SESSION_RESET} from "../actions/session";
+import {
+  MESSAGE_MORE, MESSAGE_RECEIVE, MESSAGE_SEND, SESSION_ADD, SESSION_CHANGE, SESSION_CLOSE,
+  SESSION_RESET
+} from "../actions/session";
 
 const initialState={
   activeUserId: -1,//正在聊天的对象
@@ -8,7 +11,7 @@ const initialState={
     //   session:{
     //     user:{},
     //     lastMsg:{},
-    //     lastChatTime:'',
+    //     session:{},
     //     unRead:0,
     //   },
     //   messageIds:[],
@@ -51,7 +54,24 @@ function session(state = initialState, action: any){
     case SESSION_CHANGE:
       return{
         ...state,
-        activeUserId:action.userId
+        activeUserId:action.userId,
+        users:{
+          ...state.users,
+          [action.userId]:{
+            ...state.users[action.userId],
+            session:{
+              ...state.users[action.userId].session,
+              unRead:0
+            }
+          }
+        }
+      };
+
+    //关闭聊天会话
+    case SESSION_CLOSE:
+      return{
+        ...state,
+        activeUserId:-1
       };
 
 
@@ -77,10 +97,55 @@ function session(state = initialState, action: any){
           [action.appendId]: {
             ...state.users[action.appendId],
             messageIds: [
-              ...state.users[action.appendId].messageIds,
               ...newIds,
+              ...state.users[action.appendId].messageIds,
             ]
           }
+        }
+      };
+
+
+    //发送一条消息
+    case MESSAGE_SEND:
+      const message = action.message;
+      const user_id = message.receiverId;
+      let appendUuid = message.uuid;
+      // if (state.users[user_id].messageIds.some(id => id === message.uuid)) {
+      //   appendUuid = [];//重复uuid
+      // }
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          [action.message.uuid]: action.message,
+        },
+        users: {
+          ...state.users,
+          [user_id]: {
+            ...state.users[user_id],
+            messageIds: [
+              ...state.users[user_id].messageIds,
+              appendUuid
+            ],
+            session: {
+              ...state.users[user_id].session,
+              lastMsg: message,
+            }
+          }
+        },
+      };
+
+    //添加收到消息
+    case  MESSAGE_RECEIVE:
+      return addReceiveMessage(state,action.message);
+
+    //新建会话
+    case  SESSION_ADD:
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.newUserId]: action.newSession,
         }
       };
 
@@ -90,6 +155,46 @@ function session(state = initialState, action: any){
     default:
       return state;
   }
+}
+
+/**
+ * 添加一条收到的消息
+ * @param state
+ * @param receiveMessage
+ * @return state
+ */
+function addReceiveMessage(state: any, receiveMessage: any) {
+  const userId = receiveMessage.senderId;
+  let appendUuid = receiveMessage.uuid;
+  let unReadNum = state.users[userId].session.unRead + 1;
+  if (state.users[userId].messageIds.some(item => item === receiveMessage.uuid)) {//判断是否已有重复消息
+    receiveMessage.uuid = [];
+  }
+  if (state.activeUserId === receiveMessage.senderId) {//判断是否正在聊天中
+    unReadNum = 0;
+  }
+  return {
+    ...state,
+    users: {
+      ...state.users,
+      [userId]: {
+        ...state.users[userId],
+        messageIds: [
+          ...state.users[userId].messageIds,
+          appendUuid
+        ],
+        session: {
+          ...state.users[userId].session,
+          lastMsg: receiveMessage,
+          unRead: unReadNum,
+        }
+      },
+    },
+    messages: {
+      ...state.messages,
+      [receiveMessage.uuid]: receiveMessage,
+    },
+  };
 }
 
 export default session;

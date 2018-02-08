@@ -12,6 +12,7 @@ import Avatar from "../Avatar";
 import {connect} from "react-redux";
 import {getRecentSessions} from "../../service";
 import {changeActiveUser, loadSession} from "../../actions/session";
+import {genTimeTag} from "../../utils";
 
 class SessionTab extends Component {
 
@@ -49,7 +50,7 @@ class SessionTab extends Component {
                   });
 
                   //设置当前活跃用户
-                  this.props.dispatch(changeActiveUser(item.chatUser.id));
+                  this.props.dispatch(changeActiveUser(item.chatUser));
                 }}
                 key={index}
               >
@@ -60,12 +61,11 @@ class SessionTab extends Component {
                     <Text>{item.lastMsg.content}</Text>
                   </View>
                   <View style={styles.rightView}>
-                    <Text>{item.lastMsg.createTime}</Text>
+                    <Text>{genTimeTag(item.lastMsg.createTime)}</Text>
 
                     {item.unRead>0&&<View style={styles.unRead}>
                       <Text style={styles.unReadText}>{item.unRead}</Text>
                     </View>}
-
                   </View>
                 </View>
               </TouchableWithoutFeedback>
