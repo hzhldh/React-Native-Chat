@@ -6,11 +6,12 @@ export const SESSION_CLOSE = "session/SESSION_CLOSE";
 export const MESSAGE_MORE = "session/MESSAGE_MORE";
 export const MESSAGE_SEND = "session/MESSAGE_SEND";
 export const MESSAGE_RECEIVE = "session/MESSAGE_RECEIVE";
+export const MESSAGE_UPDATE = "session/MESSAGE_UPDATE";
 
 /**
  * 初始化会话列表
  */
-export function loadSession(sessions:any) {
+export function loadSession(sessions: any) {
   return {
     type: SESSION_RESET,
     sessions
@@ -20,7 +21,7 @@ export function loadSession(sessions:any) {
 /**
  * 修改当前会话用户
  */
-export function changeActiveUser(chatUser:any) {
+export function changeActiveUser(chatUser: any) {
   //判断是否需要新建会话（联系房东等入口）
   return (dispatch: any, getState: any) => {
     if (!getState().session.users[chatUser.id]) {//需要创建会话
@@ -33,7 +34,7 @@ export function changeActiveUser(chatUser:any) {
 /**
  * 设置当前活跃用户
  */
-export function setActiveUser(userId:any) {
+export function setActiveUser(userId: any) {
   return {
     type: SESSION_CHANGE,
     userId
@@ -52,16 +53,16 @@ export function closeSession() {
 /**
  * 新增会话
  */
-export function addSession(chatUser:any) {
+export function addSession(chatUser: any) {
   let newSession = {
-    session:{
-      chatUser:chatUser,
-      lastMsg: {createTime:new Date().getTime()},
+    session: {
+      chatUser: chatUser,
+      lastMsg: {createTime: new Date().getTime()},
       unRead: 0,
     },
     messageIds: []
   };
-  let newUserId=chatUser.id;
+  let newUserId = chatUser.id;
   return {
     type: SESSION_ADD,
     newSession,
@@ -73,7 +74,7 @@ export function addSession(chatUser:any) {
 /**
  * 加载更多消息
  */
-export function loadMoreMessage(messages:any,appendId:number) {
+export function loadMoreMessage(messages: any, appendId: number) {
   return {
     type: MESSAGE_MORE,
     messages,
@@ -98,6 +99,17 @@ export function sendMessage(message: any) {
 export function addReceiveMessage(message: any) {
   return {
     type: MESSAGE_RECEIVE,
+    message
+  }
+}
+
+
+/**
+ * 更改消息的发送状态
+ */
+export function changeMessageStatus(message: any) {
+  return {
+    type: MESSAGE_UPDATE,
     message
   }
 }

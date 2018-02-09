@@ -1,10 +1,9 @@
-import {LOGGED_IN, LOGOUT} from "../actions/user";
 import {
-  MESSAGE_MORE, MESSAGE_RECEIVE, MESSAGE_SEND, SESSION_ADD, SESSION_CHANGE, SESSION_CLOSE,
+  MESSAGE_MORE, MESSAGE_RECEIVE, MESSAGE_SEND, MESSAGE_UPDATE, SESSION_ADD, SESSION_CHANGE, SESSION_CLOSE,
   SESSION_RESET
 } from "../actions/session";
 
-const initialState={
+const initialState = {
   activeUserId: -1,//正在聊天的对象
   users: {
     // 1:{
@@ -22,7 +21,7 @@ const initialState={
   }
 };
 
-function session(state = initialState, action: any){
+function session(state = initialState, action: any) {
   switch (action.type) {
     //加载会话列表
     case SESSION_RESET:
@@ -52,16 +51,16 @@ function session(state = initialState, action: any){
 
     //切换聊天用户
     case SESSION_CHANGE:
-      return{
+      return {
         ...state,
-        activeUserId:action.userId,
-        users:{
+        activeUserId: action.userId,
+        users: {
           ...state.users,
-          [action.userId]:{
+          [action.userId]: {
             ...state.users[action.userId],
-            session:{
+            session: {
               ...state.users[action.userId].session,
-              unRead:0
+              unRead: 0
             }
           }
         }
@@ -69,9 +68,9 @@ function session(state = initialState, action: any){
 
     //关闭聊天会话
     case SESSION_CLOSE:
-      return{
+      return {
         ...state,
-        activeUserId:-1
+        activeUserId: -1
       };
 
 
@@ -137,7 +136,7 @@ function session(state = initialState, action: any){
 
     //添加收到消息
     case  MESSAGE_RECEIVE:
-      return addReceiveMessage(state,action.message);
+      return addReceiveMessage(state, action.message);
 
     //新建会话
     case  SESSION_ADD:
@@ -149,7 +148,26 @@ function session(state = initialState, action: any){
         }
       };
 
-
+    //更改消息的发送状态
+    case MESSAGE_UPDATE:
+      const updateMessage = action.message;
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [updateMessage.receiverId]: {
+            ...state.users[updateMessage.receiverId],
+            session: {
+              ...state.users[updateMessage.receiverId].session,
+              lastMsg: updateMessage
+            },
+          }
+        },
+        messages: {
+          ...state.messages,
+          [updateMessage.uuid]: updateMessage,
+        }
+      };
 
 
     default:
